@@ -12,4 +12,10 @@ export interface Post {
 export interface Params {
     id: string;
 };
+
+export interface PostSubmitData {
+  title: string;
+  content: string;
+  keywords: string;
+};
   
