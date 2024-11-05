@@ -2,10 +2,10 @@ import Link from 'next/link';
 import { Post } from '../../types/Post';
 
 interface PostsListProps {
-    posts: Post[]; 
+  posts: Post[];
 }
 
-const PostsList : React.FC<PostsListProps> = ({ posts }) => {
+const PostsList: React.FC<PostsListProps> = ({ posts }) => {
   return (
     <ul>
       {posts.map((post) => (

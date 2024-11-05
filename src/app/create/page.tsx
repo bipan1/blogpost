@@ -6,10 +6,11 @@ import { redirect } from 'next/navigation';
 const prisma = new PrismaClient();
 
 const CreatePage = () => {
-
-  const submitForm  = async (data : PostSubmitData) => {
+  const submitForm = async (data: PostSubmitData) => {
     'use server';
-    const keywordsArray = data.keywords.split(',').map((keyword) => keyword.trim());
+    const keywordsArray = data.keywords
+      .split(',')
+      .map((keyword) => keyword.trim());
     await prisma.post.create({
       data: {
         title: data.title,
