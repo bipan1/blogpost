@@ -1,3 +1,4 @@
+import ContentDisplay from '@/app/components/ContentDisplay';
 import prisma from '../../../lib/prisma';
 import { Post, Params } from '../../../types/Post';
 
@@ -16,8 +17,10 @@ const PostPage = async ({ params }: { params: Params }) => {
 
   return (
     <div>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-6">{post.title}</h1>
+      </div>
+      <ContentDisplay html={post.content} removeImage={false} />
     </div>
   );
 };

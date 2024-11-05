@@ -68,6 +68,22 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
+            Keywords
+          </label>
+          <Controller
+            name="keywords"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <input
+                {...field}
+                className="mt-1 p-2 border border-gray-300 rounded w-full"
+              />
+            )}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
             Content
           </label>
           <Controller
@@ -81,22 +97,6 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
                 theme="snow"
                 modules={modules}
                 onChange={(value) => field.onChange(value)}
-              />
-            )}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Keywords (comma-separated)
-          </label>
-          <Controller
-            name="keywords"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <input
-                {...field}
-                className="mt-1 p-2 border border-gray-300 rounded w-full"
               />
             )}
           />
