@@ -24,15 +24,14 @@ export const handleImageUpload = (
         Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
         Key: `${Date.now()}-${file.name}`,
         Body: file,
+        ContentType: file.type
       };
 
       try {
         const { Location } = await s3.upload(params).promise();
-        console.log(quillRef);
         if (quillRef.current) {
           const quill = quillRef.current.getEditor();
           const range = quill.getSelection(true);
-          console.log(range);
           quill.insertEmbed(range.index, 'image', Location);
         }
       } catch (error) {

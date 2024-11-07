@@ -40,11 +40,11 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
   };
 
   const onSubmit = (data: PostSubmitData) => {
-    console.log(data);
     const serializedData = {
       ...data,
       content: JSON.stringify(data.content),
     };
+
     submitForm(serializedData);
   };
   return (
@@ -96,7 +96,7 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
                 ref={quillRef}
                 theme="snow"
                 modules={modules}
-                onChange={(value) => field.onChange(value)}
+                onChange={(value) => {console.log(value); return field.onChange(value)}}
               />
             )}
           />

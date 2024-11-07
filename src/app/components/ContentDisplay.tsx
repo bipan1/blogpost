@@ -1,6 +1,6 @@
 "use client";
 
-import { sanitizeHtmlContent, sanitizeHtmlNoImage } from '@/lib/SanitizeHtml';
+import { sanitizeHtmlNoImage } from '@/lib/SanitizeHtml';
 import React from 'react'
 
 type Props = {
@@ -9,10 +9,17 @@ type Props = {
 }
 
 const ContentDisplay = ({html, removeImage}: Props) => {
-  console.log(html)
   return (
-    <div className="prose" dangerouslySetInnerHTML={{ __html:  removeImage ? sanitizeHtmlNoImage(html) : sanitizeHtmlContent(html) }} />
-
+    <div className='w-full'>
+      {
+        removeImage ? 
+          <div dangerouslySetInnerHTML={
+            {__html : sanitizeHtmlNoImage(html.substring(0, 200) + '...')}
+          } /> 
+          : 
+          <div className="prose text-xl w-full" dangerouslySetInnerHTML={{ __html: JSON.parse(html) }} />
+      }
+    </div>
   )
 }
 
