@@ -24,7 +24,7 @@ export const handleImageUpload = (
         Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
         Key: `${Date.now()}-${file.name}`,
         Body: file,
-        ContentType: file.type
+        ContentType: file.type,
       };
 
       try {

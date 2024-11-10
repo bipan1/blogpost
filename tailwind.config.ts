@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import typography from '@tailwindcss/typography';
 
 const config: Config = {
   content: [
@@ -12,10 +13,11 @@ const config: Config = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },
+      fontFamily: {
+        kaushan: ['"Kaushan Script"', 'cursive'],
+      },
     },
   },
-  plugins: [
-    require('@tailwindcss/typography') 
-  ]
+  plugins: [typography],
 };
 export default config;

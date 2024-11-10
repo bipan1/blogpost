@@ -20,7 +20,7 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
       container: [
         [{ header: '1' }, { header: '2' }, { font: [] }],
         [{ size: [] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code'],
         [
           { list: 'ordered' },
           { list: 'bullet' },
@@ -96,7 +96,10 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
                 ref={quillRef}
                 theme="snow"
                 modules={modules}
-                onChange={(value) => {console.log(value); return field.onChange(value)}}
+                onChange={(value) => {
+                  console.log(value);
+                  return field.onChange(value);
+                }}
               />
             )}
           />

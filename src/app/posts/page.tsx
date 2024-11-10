@@ -5,13 +5,12 @@ import Spinner from '../components/Spinner';
 
 const fetchPosts = async () => {
   const posts = await prisma.post.findMany({
-    orderBy: { 
-      createdAt: 'desc', 
+    orderBy: {
+      createdAt: 'desc',
     },
   });
   return posts;
 };
-
 
 const PostsPage = async () => {
   const posts = await fetchPosts();

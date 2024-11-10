@@ -21,13 +21,13 @@ const PostPage = async ({ params }: { params: Params }) => {
       <div className="container mx-auto p-4 flex justify-center">
         <div>
           <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-          <p className="text-gray-500 text-md mb-6">
-            {formatDate(post.createdAt)} - {Math.ceil(post.content.split(' ').length / 200)} min read
+          <p className="text-gray-500 text-md mb-3">
+            {formatDate(post.createdAt)} -{' '}
+            {Math.ceil(post.content.split(' ').length / 200)} min read
           </p>
           <ContentDisplay html={post.content} removeImage={false} />
         </div>
       </div>
-      
     </div>
   );
 };

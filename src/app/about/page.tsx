@@ -1,15 +1,17 @@
-import React from 'react'
+import Hero from '../components/About/Hero';
+import About from '../components/About/About';
+import Project from '../components/About/Project';
+import Exprience from '../components/About/Exprience';
 
-type Props = {}
-
-const page = (props: Props) => {
+const HeroSection = () => {
   return (
-    <div className='flex items-center justify-center min-h-screen'>
-      <div className='text-3xl font-bold text-purple-950 '>
-        This page is under construction
-      </div>
+    <div>
+      <Hero />
+      <About />
+      <Project />
+      <Exprience />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default HeroSection;

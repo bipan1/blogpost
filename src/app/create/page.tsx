@@ -1,15 +1,13 @@
-import { PrismaClient } from '@prisma/client';
 import CreateForm from '../components/Createform';
 import { PostSubmitData } from '@/types/Post';
 import { redirect } from 'next/navigation';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 const CreatePage = () => {
   const submitForm = async (data: PostSubmitData) => {
     'use server';
     const keywordsArray = data.keywords
-      .split(',')
+      .split(' ')
       .map((keyword) => keyword.trim());
     await prisma.post.create({
       data: {
