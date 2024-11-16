@@ -12,7 +12,7 @@ const Hero = () => {
         <div className="text-center">
           <div
             className="w-44 h-44 relative z-10 mx-auto rounded-full bg-cover bg-center mb-8"
-            style={{ backgroundImage: 'url("/images/user-3.jpg")' }}
+            style={{ backgroundImage: 'url("/images/profile.png")' }}
           ></div>
           <h1
             className="text-5xl font-kaushan text-white italic mb-8"

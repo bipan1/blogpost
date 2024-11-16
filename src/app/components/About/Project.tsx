@@ -41,7 +41,7 @@ const Project = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="bg-purple-800 p-4 w-full sm:w-1/2 lg:w-1/4 rounded-2xl mr-10"
+              className="bg-purple-800 p-4 w-full sm:w-1/2 lg:w-1/4 rounded-2xl mr-10 mb-10"
             >
               <div className="relative w-full h-[230px]">
                 <Image

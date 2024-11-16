@@ -6,3 +6,8 @@ export const formatDate = (dateString: Date) => {
     year: 'numeric',
   }).format(date);
 };
+
+export const extractFirstImage = (htmlContent: string): string | null => {
+  const imgTagMatch = htmlContent.match(/<img[^>]+src="([^">]+)"/);
+  return imgTagMatch ? imgTagMatch[1] : null;
+};

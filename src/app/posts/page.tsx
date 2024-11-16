@@ -16,7 +16,7 @@ const PostsPage = async () => {
   const posts = await fetchPosts();
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
       <h1 className="text-3xl font-bold mb-6">Blog Posts</h1>
       <Suspense fallback={<Spinner />}>
         <PostsList posts={posts} />

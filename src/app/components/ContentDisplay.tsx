@@ -16,7 +16,7 @@ const ContentDisplay = ({ html, removeImage }: Props) => {
         />
       ) : (
         <div
-          className="prose text-xl w-full"
+          className="ql-editor"
           dangerouslySetInnerHTML={{ __html: JSON.parse(html) }}
         />
       )}
