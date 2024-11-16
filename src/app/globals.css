@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind base;
+
+
+.prose code {
+    @apply bg-gray-800 text-white border-2 border-gray-400 rounded-md px-2 py-1;
+}
