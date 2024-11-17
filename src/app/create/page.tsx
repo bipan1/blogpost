@@ -1,7 +1,11 @@
-import CreateForm from '../components/Createform';
 import { PostSubmitData } from '@/types/Post';
 import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma';
+import dynamic from 'next/dynamic';
+
+const CreateForm = dynamic(() => import('../components/Createform'), {
+  ssr: false,
+});
 
 const CreatePage = () => {
   const submitForm = async (data: PostSubmitData) => {
