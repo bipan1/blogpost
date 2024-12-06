@@ -39,6 +39,6 @@ export const handleImageUpload = (
           console.error('Error uploading file:', error);
         }
       }
-    }
-  };
+    };
+  }
 };
