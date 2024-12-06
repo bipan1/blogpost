@@ -12,7 +12,7 @@ const PostsList: React.FC<PostsListProps> = ({ posts }) => {
     <div>
       <ul>
         {posts.map((post) => (
-          <Link key={post.id} href={`/posts/${post.id}`}>
+          <Link key={post.id} href={`/posts/${post.id}`} prefetch={true}>
             <div key={post.id} className="mb-4 w-2/3">
               <h2 className="text-xl font-bold text-purple-900">
                 {post.title}

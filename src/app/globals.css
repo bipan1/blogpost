@@ -3,7 +3,37 @@
 @tailwind utilities;
 @tailwind base;
 
-
 .prose code {
-    @apply bg-gray-800 text-white border-2 border-gray-400 rounded-md px-2 py-1;
+  @apply bg-gray-800 text-white border-2 border-gray-400 rounded-md px-2 py-1;
+}
+
+/* Custom styles for links */
+.ql-editor a {
+  color: #007bff; /* Change to desired link color */
+  text-decoration: underline;
+}
+
+.ql-editor a:hover {
+  color: #0056b3; /* Change to desired hover link color */
+}
+
+/* Custom styles for code snippets */
+.ql-editor pre {
+  background-color: #f4f4f4;
+  padding: 10px !important;
+  border-radius: 5px;
+  overflow-x: auto;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95em;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+}
+
+.ql-editor code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95em;
+  border: 1px solid #ddd;
 }
