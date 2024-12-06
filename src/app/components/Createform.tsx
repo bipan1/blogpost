@@ -27,7 +27,7 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
           { indent: '-1' },
           { indent: '+1' },
         ],
-        ['link', 'image'],
+        ['link', 'image', 'code-block'],
         ['clean'],
       ],
       handlers: {
