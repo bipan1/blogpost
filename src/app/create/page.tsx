@@ -1,7 +1,7 @@
 import { PostSubmitData } from '@/types/Post';
 import { redirect } from 'next/navigation';
-import prisma from '@/lib/prisma';
 import dynamic from 'next/dynamic';
+import { createPost } from '@/data/Action';
 
 const CreateForm = dynamic(() => import('../components/Createform'), {
   ssr: false,
@@ -13,12 +13,9 @@ const CreatePage = () => {
     const keywordsArray = data.keywords
       .split(' ')
       .map((keyword) => keyword.trim());
-    await prisma.post.create({
-      data: {
-        title: data.title,
-        content: data.content,
-        keywords: keywordsArray,
-      },
+    await createPost({
+      ...data,
+      keywords: keywordsArray,
     });
     redirect('/posts');
   };

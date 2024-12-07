@@ -1,18 +1,8 @@
 import { MdWavingHand } from 'react-icons/md';
 import PostsList from './components/PostsList';
-import prisma from '@/lib/prisma';
 import { Suspense } from 'react';
 import Spinner from './components/Spinner';
-
-const fetchPosts = async () => {
-  const posts = await prisma.post.findMany({
-    take: 5,
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
-  return posts;
-};
+import { fetchPosts } from '@/data/Post';
 
 export default async function Home() {
   const posts = await fetchPosts();
@@ -45,9 +35,17 @@ export default async function Home() {
       <h2 className="mt-6 text-2xl font-bold text-purple-900 mb-5 ">
         Recently Published
       </h2>
-      <Suspense fallback={<Spinner />}>
-        <PostsList posts={posts} />
-      </Suspense>
+
+      {'error' in posts ? (
+        <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
+          <h1 className="text-3xl font-bold mb-6">Blog Posts</h1>
+          <p className="text-red-500">{posts.error}</p>
+        </div>
+      ) : (
+        <Suspense fallback={<Spinner />}>
+          <PostsList posts={posts} />
+        </Suspense>
+      )}
     </div>
   );
 }

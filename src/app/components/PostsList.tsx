@@ -1,13 +1,16 @@
 import Link from 'next/link';
-import { Post } from '../../types/Post';
+import { PostDisplay } from '../../types/Post';
 import ContentDisplay from './ContentDisplay';
-import { formatDate } from '@/lib/Helpers';
 
 interface PostsListProps {
-  posts: Post[];
+  posts: PostDisplay[];
 }
 
 const PostsList: React.FC<PostsListProps> = ({ posts }) => {
+  if (!posts || posts.length === 0) {
+    return <p>No Posts Available.</p>;
+  }
+
   return (
     <div>
       <ul>
@@ -18,7 +21,7 @@ const PostsList: React.FC<PostsListProps> = ({ posts }) => {
                 {post.title}
               </h2>
               <p className="text-gray-500 text-sm mb-2">
-                {formatDate(post.createdAt)} -{' '}
+                {post.formattedDate} -{' '}
                 {Math.ceil(post.content.split(' ').length / 200)} min read
               </p>
               <ContentDisplay html={post.content} removeImage={true} />

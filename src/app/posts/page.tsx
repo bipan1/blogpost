@@ -1,19 +1,19 @@
 import { Suspense } from 'react';
-import prisma from '../../lib/prisma';
 import PostsList from '../components/PostsList';
 import Spinner from '../components/Spinner';
-
-const fetchPosts = async () => {
-  const posts = await prisma.post.findMany({
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
-  return posts;
-};
+import { fetchPosts } from '@/data/Post';
 
 const PostsPage = async () => {
   const posts = await fetchPosts();
+
+  if ('error' in posts) {
+    return (
+      <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
+        <h1 className="text-3xl font-bold mb-6">Blog Posts</h1>
+        <p className="text-red-500">{posts.error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
