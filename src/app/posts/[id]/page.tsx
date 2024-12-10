@@ -1,6 +1,6 @@
 import ContentDisplay from '@/app/components/ContentDisplay';
 import { Params } from '../../../types/Post';
-import { extractFirstImage, formatDate } from '@/lib/Helpers';
+import { extractFirstImage } from '@/lib/Helpers';
 import 'react-quill/dist/quill.bubble.css';
 import { fetchPost } from '@/data/Post';
 
@@ -79,7 +79,7 @@ const PostPage = async ({ params }: { params: Params }) => {
           {post.title}
         </h1>
         <p className="text-gray-500 text-sm sm:text-md mb-3 p-2">
-          {formatDate(post.createdAt)} -{' '}
+          {post.formattedDate} -{' '}
           {Math.ceil(post.content.split(' ').length / 200)} min read
         </p>
         <ContentDisplay html={post.content} removeImage={false} />

@@ -2,7 +2,6 @@
 import { PostDisplay } from '../types/Post';
 import prisma from '../lib/prisma';
 import { formatDate } from '@/lib/Helpers';
-import { Post } from '@prisma/client';
 
 export const fetchPosts = async (): Promise<
   PostDisplay[] | { error: string }
@@ -26,7 +25,7 @@ export const fetchPosts = async (): Promise<
 
 export const fetchPost = async (
   id: number,
-): Promise<Post | { error: string }> => {
+): Promise<PostDisplay | { error: string }> => {
   try {
     const post = await prisma.post.findUnique({
       where: { id: Number(id) },
@@ -34,7 +33,10 @@ export const fetchPost = async (
     if (!post) {
       throw new Error('Post not found');
     }
-    return post;
+    return {
+      ...post,
+      formattedDate: formatDate(post.createdAt),
+    };
   } catch (error) {
     console.error('Failed to fetch post:', error);
     return { error: 'Failed to load the post. Please try again later.' };

@@ -3,7 +3,7 @@ const Footer = () => {
     <footer className="bg-purple-900 text-white py-4 mt-10">
       <div className="container mx-auto text-center">
         <p className="text-sm">
-          &copy; {new Date().getFullYear()} Bipan Chhetri. All rights reserved.
+          &copy; 2024 Bipan Chhetri. All rights reserved.
         </p>
         <div className="mt-4 flex justify-center space-x-4">
           <a
