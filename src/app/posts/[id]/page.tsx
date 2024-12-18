@@ -3,6 +3,8 @@ import { Params } from '../../../types/Post';
 import { extractFirstImage } from '@/lib/Helpers';
 import 'react-quill/dist/quill.bubble.css';
 import { fetchPost } from '@/data/Post';
+import { Suspense } from 'react';
+import Spinner from '@/app/components/Spinner';
 
 export async function generateMetadata({ params }: { params: Params }) {
   const post = await fetchPost(parseInt(params.id));
@@ -73,18 +75,20 @@ const PostPage = async ({ params }: { params: Params }) => {
   }
 
   return (
-    <div className="container mx-auto p-4 flex justify-center">
-      <div className="w-full sm:w-2/3 md:w-1/2">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2 p-2">
-          {post.title}
-        </h1>
-        <p className="text-gray-500 text-sm sm:text-md mb-3 p-2">
-          {post.formattedDate} -{' '}
-          {Math.ceil(post.content.split(' ').length / 200)} min read
-        </p>
-        <ContentDisplay html={post.content} removeImage={false} />
+    <Suspense fallback={<Spinner />}>
+      <div className="container mx-auto p-4 flex justify-center">
+        <div className="w-full sm:w-2/3 md:w-1/2">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 p-2">
+            {post.title}
+          </h1>
+          <p className="text-gray-500 text-sm sm:text-md mb-3 p-2">
+            {post.formattedDate} -{' '}
+            {Math.ceil(post.content.split(' ').length / 200)} min read
+          </p>
+          <ContentDisplay html={post.content} removeImage={false} />
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 };
 

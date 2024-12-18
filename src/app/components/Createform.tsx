@@ -97,7 +97,6 @@ const CreateForm = ({ submitForm }: CreateFormProps) => {
                 theme="snow"
                 modules={modules}
                 onChange={(value) => {
-                  console.log(value);
                   return field.onChange(value);
                 }}
               />

@@ -1,12 +1,24 @@
 import Link from 'next/link';
-import { PostDisplay } from '../../types/Post';
 import ContentDisplay from './ContentDisplay';
+import { fetchPosts } from '@/data/Post';
 
 interface PostsListProps {
-  posts: PostDisplay[];
+  page: number;
+  limit: number;
 }
 
-const PostsList: React.FC<PostsListProps> = ({ posts }) => {
+const PostsList: React.FC<PostsListProps> = async ({ page, limit }) => {
+  const posts = await fetchPosts(page, limit);
+
+  if ('error' in posts) {
+    return (
+      <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
+        <h1 className="text-3xl font-bold mb-6">Blog Posts</h1>
+        <p className="text-red-500">{posts.error}</p>
+      </div>
+    );
+  }
+
   if (!posts || posts.length === 0) {
     return <p>No Posts Available.</p>;
   }

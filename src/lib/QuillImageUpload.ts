@@ -1,4 +1,25 @@
+import axios from 'axios';
 import ReactQuill from 'react-quill';
+
+const uploadFileToS3 = async (file: File, signedUrl: string) => {
+  try {
+    const putResponse = await axios.put(signedUrl, file, {
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+
+    if (putResponse.status !== 200) {
+      throw new Error(`S3 upload failed with status ${putResponse.status}`);
+    }
+
+    const imageUrl = signedUrl.split('?')[0];
+    return imageUrl;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
+};
 
 export const handleImageUpload = (
   quillRef: React.MutableRefObject<ReactQuill | null>,
@@ -13,29 +34,15 @@ export const handleImageUpload = (
       if (input.files && input.files[0]) {
         const file = input.files[0];
 
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        try {
+          const response = await axios.post('/api/upload', {
             fileName: file.name,
             fileType: file.type,
-          }),
-        });
-
-        const { signedUrl } = await response.json();
-
-        try {
-          await fetch(signedUrl, {
-            method: 'PUT',
-            body: file,
-            headers: {
-              'Content-Type': file.type,
-            },
           });
 
-          const imageUrl = signedUrl.split('?')[0];
+          const { signedUrl } = response.data;
+
+          const imageUrl = await uploadFileToS3(file, signedUrl);
 
           if (quillRef.current) {
             const quill = quillRef.current.getEditor();
@@ -45,24 +52,6 @@ export const handleImageUpload = (
         } catch (error) {
           console.error('Error uploading file:', error);
         }
-
-        // const params = {
-        //   Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
-        //   Key: `${Date.now()}-${file.name}`,
-        //   Body: file,
-        //   ContentType: file.type,
-        // };
-
-        // try {
-        //   const { Location } = await s3.upload(params).promise();
-        //   if (quillRef.current) {
-        //     const quill = quillRef.current.getEditor();
-        //     const range = quill.getSelection(true);
-        //     quill.insertEmbed(range.index, 'image', Location);
-        //   }
-        // } catch (error) {
-        //   console.error('Error uploading file:', error);
-        // }
       }
     };
   }

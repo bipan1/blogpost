@@ -143,7 +143,7 @@ const Exprience = () => {
                   </span>
                 </div>
                 <div className="text-left lg:text-right">
-                  <p>Bachelors in Electronics and Communication Engineering</p>
+                  <p>Bachelors in Computer Engineering</p>
                 </div>
               </div>
             </li>

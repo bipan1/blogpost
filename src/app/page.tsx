@@ -3,6 +3,7 @@ import PostsList from './components/PostsList';
 import { Suspense } from 'react';
 import Spinner from './components/Spinner';
 import { fetchPosts } from '@/data/Post';
+import Link from 'next/link';
 
 export default async function Home() {
   const posts = await fetchPosts();
@@ -43,7 +44,12 @@ export default async function Home() {
         </div>
       ) : (
         <Suspense fallback={<Spinner />}>
-          <PostsList posts={posts} />
+          <PostsList page={1} limit={4} />
+          <Link href={'/posts'}>
+            <div className="p-2 mt-3 lg:w-1/2 border-2 border-purple-600 rounded-xl text-center hover:bg-purple-400 hover:text-white">
+              <p className="font-bold text-lg">View all posts</p>
+            </div>
+          </Link>
         </Suspense>
       )}
     </div>
