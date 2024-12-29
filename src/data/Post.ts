@@ -1,26 +1,52 @@
-// Functions to fetch data in server components.
 import { PostDisplay } from '../types/Post';
 import prisma from '../lib/prisma';
 import { formatDate } from '@/lib/Helpers';
+import { POST_LIMIT } from '@/lib/Constants';
+import axios from 'axios';
+
 
 export const fetchPosts = async (
   page: number = 1,
-  limit: number = 4,
+  search : string | undefined
 ): Promise<PostDisplay[] | { error: string }> => {
   try {
-    const skip = (page - 1) * limit;
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      skip,
-      take: limit,
-    });
+    const skip = (page - 1) * POST_LIMIT;
+    
+    if(search){
+      const response = await axios.get(`http://localhost:3000/api/search`, { params: { q: search, page }, });
 
-    return posts.map((post) => ({
-      ...post,
-      formattedDate: formatDate(post.createdAt),
-    }));
+      const postIds = response.data.map((id: any) => parseInt(id));
+      const posts = await prisma.post.findMany({
+        where: {
+          id: {
+            in: postIds,
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return posts.map((post) => ({
+        ...post,
+        formattedDate: formatDate(post.createdAt),
+      }));
+
+    } else {
+      const posts = await prisma.post.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip,
+        take: POST_LIMIT,
+      });
+
+      return posts.map((post) => ({
+        ...post,
+        formattedDate: formatDate(post.createdAt),
+      }));
+    }
+    
   } catch (error) {
     console.error('Failed to fetch posts:', error);
     return { error: 'Failed to load posts. Please try again later.' };
@@ -47,12 +73,3 @@ export const fetchPost = async (
   }
 };
 
-export const fetchTotalPages = async (): Promise<number> => {
-  try {
-    const totalCount = await prisma.post.count();
-    return Math.ceil(totalCount / 4);
-  } catch (error) {
-    console.error('Failed to fetch total post count:', error);
-    return 0;
-  }
-};

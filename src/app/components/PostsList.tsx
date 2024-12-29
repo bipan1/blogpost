@@ -4,11 +4,11 @@ import { fetchPosts } from '@/data/Post';
 
 interface PostsListProps {
   page: number;
-  limit: number;
+  search ?: string;
 }
 
-const PostsList: React.FC<PostsListProps> = async ({ page, limit }) => {
-  const posts = await fetchPosts(page, limit);
+const PostsList: React.FC<PostsListProps> = async ({ page, search }) => {
+  const posts = await fetchPosts(page, search);
 
   if ('error' in posts) {
     return (
@@ -56,3 +56,6 @@ const PostsList: React.FC<PostsListProps> = async ({ page, limit }) => {
 };
 
 export default PostsList;
+
+
+

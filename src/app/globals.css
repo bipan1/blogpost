@@ -37,3 +37,7 @@
   font-size: 0.95em;
   border: 1px solid #ddd;
 }
+
+em {
+  font-weight: bold;
+}

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { LiaLaptopCodeSolid } from 'react-icons/lia';
-import { FaSearch } from 'react-icons/fa';
 import NavBarClient from './NavBarClient';
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
   return (
@@ -18,15 +18,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <div className="hidden sm:flex">
-            <input
-              className="h-8 border border-gray-200 rounded-md w-full mr-2"
-              placeholder="Search..."
-            />
-            <FaSearch className="mt-1" size={20} color="gray" />
-          </div>
-        </div>
+        <SearchBar />
 
         <div className="hidden sm:flex space-x-6">
           <Link href="/posts">

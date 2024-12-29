@@ -44,7 +44,7 @@ export default async function Home() {
         </div>
       ) : (
         <Suspense fallback={<Spinner />}>
-          <PostsList page={1} limit={4} />
+          <PostsList page={1} />
           <Link href={'/posts'}>
             <div className="p-2 mt-3 lg:w-1/2 border-2 border-purple-600 rounded-xl text-center hover:bg-purple-400 hover:text-white">
               <p className="font-bold text-lg">View all posts</p>
