@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Client as ESClient, estypes } from '@elastic/elasticsearch';
-import fs from 'fs';
 
 const esClient = new ESClient({
   node: process.env.ELASTICSEARCH_URL,
   ssl: {
-    cert: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_CERT!),
-    key: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_KEY!),
-    ca: fs.readFileSync(process.env.ELASTICSEARCH_CA_CERT!),
+    cert: process.env.ELASTICSEARCH_CLIENT_CERT,
+    key: process.env.ELASTICSEARCH_CLIENT_KEY,
+    ca: process.env.ELASTICSEARCH_CA_CERT,
     rejectUnauthorized: false,
   },
 });

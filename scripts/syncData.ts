@@ -1,7 +1,6 @@
 import { Client as ESClient } from '@elastic/elasticsearch';
 import pg from 'pg';
 import dotenv from 'dotenv';
-import fs from 'fs';
 
 dotenv.config();
 
@@ -24,9 +23,9 @@ const esClient = new ESClient({
   node: process.env.ELASTICSEARCH_URL,
   ssl: {
     // tls : Replaced with version 8 and above.
-    cert: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_CERT!),
-    key: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_KEY!),
-    ca: fs.readFileSync(process.env.ELASTICSEARCH_CA_CERT!),
+    cert: process.env.ELASTICSEARCH_CLIENT_CERT,
+    key: process.env.ELASTICSEARCH_CLIENT_KEY,
+    ca: process.env.ELASTICSEARCH_CA_CERT,
     rejectUnauthorized: false,
   },
 });
