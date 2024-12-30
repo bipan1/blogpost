@@ -12,9 +12,12 @@ export const fetchPosts = async (
     const skip = (page - 1) * POST_LIMIT;
 
     if (search) {
-      const response = await axios.get('http://localhost:3000/api/search', {
-        params: { q: search, page },
-      });
+      const response = await axios.get(
+        `${process.env.API_ENDPOINT}api/search`,
+        {
+          params: { q: search, page },
+        },
+      );
 
       const postIds = response.data.map((id: string) => parseInt(id));
       const posts = await prisma.post.findMany({
