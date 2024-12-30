@@ -4,7 +4,7 @@ import { fetchPosts } from '@/data/Post';
 
 interface PostsListProps {
   page: number;
-  search ?: string;
+  search?: string;
 }
 
 const PostsList: React.FC<PostsListProps> = async ({ page, search }) => {
@@ -56,6 +56,3 @@ const PostsList: React.FC<PostsListProps> = async ({ page, search }) => {
 };
 
 export default PostsList;
-
-
-

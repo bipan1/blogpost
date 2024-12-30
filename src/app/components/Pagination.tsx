@@ -19,7 +19,7 @@ const Pagination: React.FC<PaginationProps> = ({ page }) => {
     };
 
     getTotalPages();
-  }, [])
+  }, []);
 
   const handlePageChange = (newPage: number) => {
     router.push(`/posts?page=${newPage}`);

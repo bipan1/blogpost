@@ -1,6 +1,5 @@
-
 import { NextRequest, NextResponse } from 'next/server';
-import { Client as ESClient } from '@elastic/elasticsearch';
+import { Client as ESClient, estypes } from '@elastic/elasticsearch';
 import fs from 'fs';
 
 const esClient = new ESClient({
@@ -17,9 +16,11 @@ export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const query = url.searchParams.get('q');
 
-
   if (!query) {
-    return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Query parameter is required' },
+      { status: 400 },
+    );
   }
 
   try {
@@ -28,16 +29,21 @@ export async function GET(req: NextRequest) {
       body: {
         query: {
           match: {
-            title : query,
-          }
+            title: query,
+          },
         },
       },
     });
 
-    const results = result.body.hits.hits.map((hit: any) => hit._id);
+    const results = result.body.hits.hits.map(
+      (hit: estypes.SearchHit) => hit._id,
+    );
     return NextResponse.json(results);
   } catch (error) {
     console.error('Error during Elasticsearch search:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
   }
 }

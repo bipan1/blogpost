@@ -18,7 +18,9 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <SearchBar />
+        <div className="hidden sm:flex">
+          <SearchBar />
+        </div>
 
         <div className="hidden sm:flex space-x-6">
           <Link href="/posts">

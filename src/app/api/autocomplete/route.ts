@@ -1,6 +1,5 @@
-
 import { NextRequest, NextResponse } from 'next/server';
-import { Client as ESClient } from '@elastic/elasticsearch';
+import { Client as ESClient, estypes } from '@elastic/elasticsearch';
 import fs from 'fs';
 
 const esClient = new ESClient({
@@ -18,38 +17,45 @@ export async function GET(req: NextRequest) {
   const query = url.searchParams.get('q');
 
   if (!query) {
-    return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Query parameter is required' },
+      { status: 400 },
+    );
   }
 
   try {
     const response = await esClient.search({
       index: 'blogposts',
-      body : {
-        query: { 
-          multi_match: { 
-            query: query, 
-            fields: ["title_as_you_type"], 
-            type: "bool_prefix" 
-          } 
+      body: {
+        query: {
+          multi_match: {
+            query: query,
+            fields: ['title_as_you_type'],
+            type: 'bool_prefix',
+          },
         },
         highlight: {
-          fields: { 
+          fields: {
             title_as_you_type: {
               fragment_size: 30,
-            }
-          } 
-        }
-      }
+            },
+          },
+        },
+      },
     });
 
-    const suggestions = response.body.hits.hits.flatMap((hit: any) => {
-      return {text : hit.highlight?.title_as_you_type || [], id : hit._id}; 
-    }).slice(0, 5);
+    const suggestions = response.body.hits.hits
+      .flatMap((hit: estypes.SearchHit) => {
+        return { text: hit.highlight?.title_as_you_type || [], id: hit._id };
+      })
+      .slice(0, 5);
 
     return NextResponse.json(suggestions);
-    
   } catch (error) {
     console.error('Error during Elasticsearch search:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
   }
 }

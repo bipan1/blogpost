@@ -4,18 +4,19 @@ import { formatDate } from '@/lib/Helpers';
 import { POST_LIMIT } from '@/lib/Constants';
 import axios from 'axios';
 
-
 export const fetchPosts = async (
   page: number = 1,
-  search : string | undefined
+  search: string | undefined,
 ): Promise<PostDisplay[] | { error: string }> => {
   try {
     const skip = (page - 1) * POST_LIMIT;
-    
-    if(search){
-      const response = await axios.get(`http://localhost:3000/api/search`, { params: { q: search, page }, });
 
-      const postIds = response.data.map((id: any) => parseInt(id));
+    if (search) {
+      const response = await axios.get('http://localhost:3000/api/search', {
+        params: { q: search, page },
+      });
+
+      const postIds = response.data.map((id: string) => parseInt(id));
       const posts = await prisma.post.findMany({
         where: {
           id: {
@@ -31,7 +32,6 @@ export const fetchPosts = async (
         ...post,
         formattedDate: formatDate(post.createdAt),
       }));
-
     } else {
       const posts = await prisma.post.findMany({
         orderBy: {
@@ -46,7 +46,6 @@ export const fetchPosts = async (
         formattedDate: formatDate(post.createdAt),
       }));
     }
-    
   } catch (error) {
     console.error('Failed to fetch posts:', error);
     return { error: 'Failed to load posts. Please try again later.' };
@@ -72,4 +71,3 @@ export const fetchPost = async (
     return { error: 'Failed to load the post. Please try again later.' };
   }
 };
-

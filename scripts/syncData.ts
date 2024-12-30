@@ -10,7 +10,7 @@ const requiredEnvVars = [
   'ELASTICSEARCH_CLIENT_CERT',
   'ELASTICSEARCH_CLIENT_KEY',
   'ELASTICSEARCH_CA_CERT',
-  'DATABASE_URL'
+  'DATABASE_URL',
 ];
 
 for (const varName of requiredEnvVars) {
@@ -22,11 +22,12 @@ for (const varName of requiredEnvVars) {
 
 const esClient = new ESClient({
   node: process.env.ELASTICSEARCH_URL,
-  ssl: {    // tls : Replaced with version 8 and above.
-    cert: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_CERT!), 
-    key: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_KEY!), 
-    ca: fs.readFileSync(process.env.ELASTICSEARCH_CA_CERT!), 
-    rejectUnauthorized: false
+  ssl: {
+    // tls : Replaced with version 8 and above.
+    cert: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_CERT!),
+    key: fs.readFileSync(process.env.ELASTICSEARCH_CLIENT_KEY!),
+    ca: fs.readFileSync(process.env.ELASTICSEARCH_CA_CERT!),
+    rejectUnauthorized: false,
   },
 });
 
@@ -50,7 +51,10 @@ const syncData = async () => {
     let hasMoreData = true;
 
     while (hasMoreData) {
-      const res = await pgClient.query('SELECT * FROM "Post" LIMIT $1 OFFSET $2', [batchSize, offset]);
+      const res = await pgClient.query(
+        'SELECT * FROM "Post" LIMIT $1 OFFSET $2',
+        [batchSize, offset],
+      );
       const posts: BlogPost[] = res.rows;
 
       if (posts.length < batchSize) hasMoreData = false;
@@ -61,10 +65,10 @@ const syncData = async () => {
           id: post.id.toString(),
           body: {
             title: post.title,
-            title_as_you_type: post.title, 
-            title_suggest: { 
-              input: [post.title] 
-            }, 
+            title_as_you_type: post.title,
+            title_suggest: {
+              input: [post.title],
+            },
           },
         });
       }
@@ -73,10 +77,10 @@ const syncData = async () => {
     }
 
     console.log('Data synchronized successfully');
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error during data synchronization:', error.message);
   } finally {
-    await pgClient.end();  // Ensure the client connection is closed
+    await pgClient.end(); // Ensure the client connection is closed
   }
 };
 

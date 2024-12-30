@@ -3,14 +3,10 @@
 import { PostDbSubmitData } from '../types/Post';
 import prisma from '../lib/prisma';
 import { POST_LIMIT } from '@/lib/Constants';
-import client from '@/lib/elasticsearch';
 
 export const createPost = async (
   data: PostDbSubmitData,
 ): Promise<{ success: boolean; error?: string }> => {
-
-  // Need to handle user authorization here before accessing the function.
-  
   try {
     await prisma.post.create({
       data: {
@@ -29,8 +25,6 @@ export const createPost = async (
   }
 };
 
-
-// Fetches the total number of posts for pagination.
 export const fetchTotalPages = async (): Promise<number> => {
   try {
     const totalCount = await prisma.post.count();
@@ -40,22 +34,3 @@ export const fetchTotalPages = async (): Promise<number> => {
     return 0;
   }
 };
-
-
-// Elastic search function
-// export const elasticSearch = async (query : string) : Promise<string> => {
-//   try {
-//     const result = await client.search({
-//       index: 'your_index_name', // Replace with your Elasticsearch index
-//       body: {
-//         query: {
-//           match: { title: query }, // Replace 'title' with your searchable field
-//         },
-//       },
-//     });
-
-//     return result.body.hits.hits
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }

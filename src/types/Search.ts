@@ -1,4 +1,4 @@
-interface SuggestionResType {
-    id : string;
-    text : string;
-} 
+export interface SuggestionResType {
+  id: string;
+  text: string;
+}

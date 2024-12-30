@@ -18,7 +18,7 @@ const PostsPage = async ({ searchParams }: { searchParams: SearchParams }) => {
       <Suspense fallback={<Spinner />}>
         <PostsList page={page} search={search} />
       </Suspense>
-      <Pagination page={page}/>
+      <Pagination page={page} />
     </div>
   );
 };
