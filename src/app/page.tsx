@@ -6,7 +6,7 @@ import { fetchPosts } from '@/data/Post';
 import Link from 'next/link';
 
 export default async function Home() {
-  const posts = await fetchPosts();
+  const posts = await fetchPosts(1, '');
 
   return (
     <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
