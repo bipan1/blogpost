@@ -22,6 +22,7 @@ const TabBar: React.FC<TabBarProps> = ({ category = Category.WebDev }) => {
         <Link
           href={`/posts/?category=${cat}`}
           key={cat}
+          prefetch={true}
           className={`pb-2 border-b-2 px-3 ${
             category === cat
               ? 'border-blue-500 text-blue-500'

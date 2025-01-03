@@ -22,8 +22,8 @@ const PostsPage = async ({ searchParams }: { searchParams: SearchParams }) => {
       <TabBar category={categoryParam} />
       <Suspense fallback={<Spinner />}>
         <PostsList page={page} search={search} category={categoryParam} />
+        <Pagination page={page} category={categoryParam} />
       </Suspense>
-      <Pagination page={page} category={categoryParam} />
     </div>
   );
 };
