@@ -2,7 +2,7 @@
 
 import { PostDbSubmitData } from '../types/Post';
 import prisma from '../lib/prisma';
-import { POST_LIMIT } from '@/lib/Constants';
+import { Category, POST_LIMIT } from '@/lib/Constants';
 
 export const createPost = async (
   data: PostDbSubmitData,
@@ -25,10 +25,18 @@ export const createPost = async (
   }
 };
 
-export const fetchTotalPages = async (): Promise<number> => {
+export const fetchTotalPages = async (
+  category: Category = Category.WebDev,
+): Promise<number> => {
   try {
-    const totalCount = await prisma.post.count();
-    return Math.ceil(totalCount / POST_LIMIT);
+    const totalCount = await prisma.post.count({
+      where: {
+        category: {
+          equals: category,
+        },
+      },
+    });
+    return Math.max(Math.ceil(totalCount / POST_LIMIT), 1);
   } catch (error) {
     console.error('Failed to fetch total post count:', error);
     return 0;

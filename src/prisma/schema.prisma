@@ -7,6 +7,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Category {
+  WebDev
+  Tech
+  Gadgets
+  Finance
+  Politics
+  Random
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
@@ -15,4 +24,5 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   keywords  String[]
+  category  Category @default(WebDev)
 }

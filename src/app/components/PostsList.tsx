@@ -1,14 +1,20 @@
 import Link from 'next/link';
 import ContentDisplay from './ContentDisplay';
 import { fetchPosts } from '@/data/Post';
+import { Category } from '@/lib/Constants';
 
 interface PostsListProps {
   page: number;
   search?: string;
+  category?: Category;
 }
 
-const PostsList: React.FC<PostsListProps> = async ({ page, search }) => {
-  const posts = await fetchPosts(page, search);
+const PostsList: React.FC<PostsListProps> = async ({
+  page,
+  search,
+  category,
+}) => {
+  const posts = await fetchPosts(page, search, category);
 
   if ('error' in posts) {
     return (
@@ -20,9 +26,8 @@ const PostsList: React.FC<PostsListProps> = async ({ page, search }) => {
   }
 
   if (!posts || posts.length === 0) {
-    return <p>No Posts Available.</p>;
+    return <p className="text-center font-bold text-xl">No Posts Available.</p>;
   }
-
   return (
     <div>
       <ul>

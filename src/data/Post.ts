@@ -1,12 +1,13 @@
 import { PostDisplay } from '../types/Post';
 import prisma from '../lib/prisma';
 import { formatDate } from '@/lib/Helpers';
-import { POST_LIMIT } from '@/lib/Constants';
+import { Category, POST_LIMIT } from '@/lib/Constants';
 import axios from 'axios';
 
 export const fetchPosts = async (
   page: number = 1,
   search: string | undefined,
+  category: Category = Category.WebDev,
 ): Promise<PostDisplay[] | { error: string }> => {
   try {
     const skip = (page - 1) * POST_LIMIT;
@@ -42,6 +43,11 @@ export const fetchPosts = async (
         },
         skip,
         take: POST_LIMIT,
+        where: {
+          category: {
+            equals: category,
+          },
+        },
       });
 
       return posts.map((post) => ({

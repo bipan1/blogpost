@@ -1,28 +1,33 @@
 'use client';
 import { fetchTotalPages } from '@/data/Action';
+import { Category } from '@/lib/Constants';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 interface PaginationProps {
   page: number;
+  category?: Category;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ page }) => {
-  const [totalPages, setTotalPages] = useState<number>(0);
+const Pagination: React.FC<PaginationProps> = ({
+  page,
+  category = Category.WebDev,
+}) => {
+  const [totalPages, setTotalPages] = useState<number>(1);
   const router = useRouter();
 
   useEffect(() => {
     const getTotalPages = async () => {
-      const pages = await fetchTotalPages();
+      const pages = await fetchTotalPages(category);
       setTotalPages(pages);
     };
 
     getTotalPages();
-  }, []);
+  }, [category]);
 
   const handlePageChange = (newPage: number) => {
-    router.push(`/posts?page=${newPage}`);
+    router.push(`/posts?page=${newPage}?category=${category}`);
   };
 
   return (
