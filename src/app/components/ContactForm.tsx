@@ -1,17 +1,20 @@
 'use client';
 
-import { ContactData } from '@/types/Contact';
-import React from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import emailjs from '@emailjs/browser';
+import type { ContactData } from '@/types/Contact';
+
+type Status = 'idle' | 'sent' | 'failed';
 
 const ContactForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm<ContactData>();
+  const [status, setStatus] = useState<Status>('idle');
 
   const onSubmit = async (data: ContactData) => {
     try {
@@ -28,56 +31,85 @@ const ContactForm = () => {
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
       );
       reset();
+      setStatus('sent');
     } catch (error) {
       console.error('Failed to send message:', error);
+      setStatus('failed');
     }
   };
 
   return (
-    <div className="container w-1/2">
-      <h2 className="text-3xl font-bold mb-4">Contact Us</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      className="space-y-5 rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs sm:p-8"
+    >
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-bold mb-2">Name</label>
+          <label htmlFor="name" className="field-label">
+            Name
+          </label>
           <input
+            id="name"
             type="text"
+            autoComplete="name"
+            aria-invalid={!!errors.name}
             {...register('name', { required: true })}
-            className="w-full p-2 border rounded"
+            className="field-input"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm">Name is required.</p>
-          )}
+          {errors.name && <p className="field-error">Name is required.</p>}
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2">Email</label>
+          <label htmlFor="email" className="field-label">
+            Email
+          </label>
           <input
+            id="email"
             type="email"
-            {...register('email', { required: true })}
-            className="w-full p-2 border rounded"
+            autoComplete="email"
+            aria-invalid={!!errors.email}
+            {...register('email', {
+              required: true,
+              pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            })}
+            className="field-input"
           />
           {errors.email && (
-            <p className="text-red-500 text-sm">Email is required.</p>
+            <p className="field-error">A valid email is required.</p>
           )}
         </div>
-        <div>
-          <label className="block text-sm font-bold mb-2">Message</label>
-          <textarea
-            {...register('message', { required: true })}
-            className="w-full p-2 border rounded"
-            rows={4}
-          />
-          {errors.message && (
-            <p className="text-red-500 text-sm">Message is required.</p>
-          )}
-        </div>
-        <button
-          type="submit"
-          className="bg-purple-700 text-white px-4 py-2 rounded"
-        >
-          Send
+      </div>
+      <div>
+        <label htmlFor="message" className="field-label">
+          Message
+        </label>
+        <textarea
+          id="message"
+          rows={6}
+          aria-invalid={!!errors.message}
+          {...register('message', { required: true })}
+          className="field-input resize-y"
+        />
+        {errors.message && <p className="field-error">Message is required.</p>}
+      </div>
+      <div className="flex flex-wrap items-center gap-4">
+        <button type="submit" disabled={isSubmitting} className="btn-primary">
+          {isSubmitting ? 'Sending...' : 'Send message'}
         </button>
-      </form>
-    </div>
+        <p role="status" className="text-sm">
+          {status === 'sent' && (
+            <span className="text-emerald-700">
+              Thanks! Your message has been sent.
+            </span>
+          )}
+          {status === 'failed' && (
+            <span className="text-red-600">
+              Sorry, your message could not be sent. Please try again later.
+            </span>
+          )}
+        </p>
+      </div>
+    </form>
   );
 };
 

@@ -1,58 +1,46 @@
-import axios from 'axios';
-import ReactQuill from 'react-quill';
+import type { RefObject } from 'react';
+import type ReactQuill from 'react-quill-new';
 
-const uploadFileToS3 = async (file: File, signedUrl: string) => {
-  try {
-    const putResponse = await axios.put(signedUrl, file, {
-      headers: {
-        'Content-Type': file.type,
-      },
-    });
+const uploadImage = async (file: File): Promise<string> => {
+  const res = await fetch('/api/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+  });
+  if (!res.ok) throw new Error(`Signing upload failed (${res.status})`);
+  const { signedUrl } = (await res.json()) as { signedUrl: string };
 
-    if (putResponse.status !== 200) {
-      throw new Error(`S3 upload failed with status ${putResponse.status}`);
-    }
+  const put = await fetch(signedUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': file.type },
+    body: file,
+  });
+  if (!put.ok) throw new Error(`S3 upload failed (${put.status})`);
 
-    const imageUrl = signedUrl.split('?')[0];
-    return imageUrl;
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    throw error;
-  }
+  return signedUrl.split('?')[0];
 };
 
-export const handleImageUpload = (
-  quillRef: React.MutableRefObject<ReactQuill | null>,
-) => {
-  if (typeof document !== 'undefined') {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
+/** Opens a file picker, uploads the chosen image to S3 and embeds it. */
+export const handleImageUpload = (quillRef: RefObject<ReactQuill | null>) => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
 
-    input.onchange = async () => {
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
+  input.onchange = async () => {
+    const file = input.files?.[0];
+    if (!file) return;
 
-        try {
-          const response = await axios.post('/api/upload', {
-            fileName: file.name,
-            fileType: file.type,
-          });
-
-          const { signedUrl } = response.data;
-
-          const imageUrl = await uploadFileToS3(file, signedUrl);
-
-          if (quillRef.current) {
-            const quill = quillRef.current.getEditor();
-            const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', imageUrl);
-          }
-        } catch (error) {
-          console.error('Error uploading file:', error);
-        }
+    try {
+      const imageUrl = await uploadImage(file);
+      const quill = quillRef.current?.getEditor();
+      if (quill) {
+        const range = quill.getSelection(true);
+        quill.insertEmbed(range.index, 'image', imageUrl);
       }
-    };
-  }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+
+  input.click();
 };

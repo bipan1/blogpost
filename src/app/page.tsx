@@ -1,57 +1,79 @@
-import { MdWavingHand } from 'react-icons/md';
-import PostsList from './components/PostsList';
 import { Suspense } from 'react';
-import Spinner from './components/Spinner';
-import { fetchPosts } from '@/data/Post';
 import Link from 'next/link';
+import { connection } from 'next/server';
+import { HiArrowRight } from 'react-icons/hi';
+import { getPosts } from '@/data/posts';
+import Avatar from './components/Avatar';
+import Container from './components/Container';
+import PostListSkeleton from './components/PostListSkeleton';
+import PostsList from './components/PostsList';
 
-export default async function Home() {
-  const posts = await fetchPosts(1, '');
+async function RecentPosts() {
+  // Render per request: the intro above is static, posts stream in.
+  await connection();
+  const posts = await getPosts({ page: 1 });
+  return <PostsList posts={posts} />;
+}
 
+export default function Home() {
   return (
-    <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
-      <div className="flex mb-2">
-        <MdWavingHand size={40} color="#e0ac69" className="mr-2" />
-        <span className="mt-2 text-purple-900 font-extrabold text-2xl">
-          I&apos;m Bipan,
-        </span>
-      </div>
-      <div className="text-lg text-gray-700">
-        I&apos;m a Software Engineer with 3 years of experience in full-stack
-        web development, specialising in React and Node.js. Skilled in MVC
-        frameworks, RESTful and GraphQL services, and equipped with the latest
-        advancements in the JavaScript and React ecosystem, including
-        Server-Side Rendering (SSR) and modern web practices. Experienced with
-        Agile methodologies, AWS, CI/CD, and automated testing. I&apos;m an AWS
-        Certified Developer Associate, demonstrating expertise in cloud
-        computing and scalable application deployment.
-      </div>
-
-      <div className="text-lg text-gray-700 mt-4">
-        Welcome to my website, where I share my tech articles and insights.
-        Here, you can explore my experience and projects, showcasing the work
-        I&apos;ve done across various roles and technologies.
-      </div>
-
-      <h2 className="mt-6 text-2xl font-bold text-purple-900 mb-5 ">
-        Recently Published
-      </h2>
-
-      {'error' in posts ? (
-        <div className="container mx-auto px-4 sm:px-16 lg:px-36 p-4">
-          <h1 className="text-3xl font-bold mb-6">Blog Posts</h1>
-          <p className="text-red-500">{posts.error}</p>
+    <Container>
+      <section className="max-w-2xl pt-8 pb-14 sm:pt-12">
+        <Avatar size={64} className="ring-4 ring-white shadow-md" />
+        <h1 className="mt-5 text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl">
+          Hi, I&apos;m Bipan{' '}
+          <span className="inline-block origin-[70%_70%] motion-safe:animate-[wave_2s_ease-in-out_1]">
+            👋
+          </span>
+        </h1>
+        <p className="mt-5 text-xl leading-relaxed text-zinc-800">
+          I&apos;m a full-stack Software Engineer specialising in React, Node.js
+          and AWS, currently building digital lending products at Nimo
+          Industries in Melbourne.
+        </p>
+        <div className="mt-4 space-y-4 text-lg leading-relaxed text-zinc-600">
+          <p>
+            I work across the stack, from server-rendered React and Next.js
+            front ends to RESTful and GraphQL APIs and serverless services on
+            AWS. I care about clean code, automated testing and reliable CI/CD,
+            and I&apos;m an AWS Certified Developer&nbsp;–&nbsp;Associate.
+          </p>
+          <p>
+            This site is where I write about what I&apos;m learning and
+            building. Browse the latest articles below, or read more about my
+            experience and projects.
+          </p>
         </div>
-      ) : (
-        <Suspense fallback={<Spinner />}>
-          <PostsList page={1} />
-          <Link href={'/posts'}>
-            <div className="p-2 mt-3 lg:w-1/2 border-2 border-purple-600 rounded-xl text-center hover:bg-purple-400 hover:text-white">
-              <p className="font-bold text-lg">View all posts</p>
-            </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link href="/posts" className="btn-primary">
+            Read the blog
           </Link>
+          <Link href="/about" className="btn-secondary">
+            About me
+          </Link>
+        </div>
+      </section>
+
+      <section aria-labelledby="recent-heading">
+        <div className="mb-5 flex items-baseline justify-between">
+          <h2 id="recent-heading" className="section-heading">
+            Recently published
+          </h2>
+          <Link
+            href="/posts"
+            className="group inline-flex items-center gap-1 text-sm font-medium text-violet-700 hover:text-violet-900"
+          >
+            View all posts
+            <HiArrowRight
+              className="transition-transform group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
+        <Suspense fallback={<PostListSkeleton />}>
+          <RecentPosts />
         </Suspense>
-      )}
-    </div>
+      </section>
+    </Container>
   );
 }

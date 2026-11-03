@@ -1,43 +1,209 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@tailwind base;
+@import 'tailwindcss';
 
-.prose code {
-  @apply bg-gray-800 text-white border-2 border-gray-400 rounded-md px-2 py-1;
+/* `inline` because the Geist variables are defined on <body> by next/font. */
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji';
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
-/* Custom styles for links */
-.ql-editor a {
-  color: #007bff; /* Change to desired link color */
-  text-decoration: underline;
+/*
+  Tailwind v4 changed some preflight defaults; keep the v3 behaviour the
+  existing markup was designed for.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-zinc-200, currentcolor);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-zinc-400);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background-color: var(--color-violet-200);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-violet-500);
+    outline-offset: 2px;
+  }
 }
 
-.ql-editor a:hover {
-  color: #0056b3; /* Change to desired hover link color */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-zinc-900 text-white hover:bg-zinc-700;
+}
+@utility btn-secondary {
+  @apply btn border border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50;
+}
+@utility field-label {
+  @apply mb-1.5 block text-sm font-medium text-zinc-700;
+}
+@utility field-input {
+  @apply block w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-zinc-900 shadow-xs transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 focus:outline-hidden;
+}
+@utility field-error {
+  @apply mt-1.5 text-sm text-red-600;
+}
+@utility chip {
+  @apply inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600;
 }
 
-/* Custom styles for code snippets */
-.ql-editor pre {
-  background-color: #f4f4f4;
-  padding: 10px !important;
-  border-radius: 5px;
-  overflow-x: auto;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.95em;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
+/*
+  Rendered post body. Handles both Quill 1 markup (<ul>/<ol>, pre.ql-syntax)
+  and Quill 2 markup (<ol><li data-list>, .ql-code-block-container), so the
+  editor's own stylesheet isn't needed on the public pages.
+*/
+.post-content {
+  @apply text-[1.0625rem] leading-8 text-zinc-700;
+  overflow-wrap: break-word;
+
+  & > * + * {
+    @apply mt-5;
+  }
+  & h1,
+  & h2,
+  & h3 {
+    @apply mt-10 font-semibold tracking-tight text-zinc-900;
+  }
+  & h1 {
+    @apply text-2xl leading-9;
+  }
+  & h2 {
+    @apply text-xl leading-8;
+  }
+  & h3 {
+    @apply text-lg;
+  }
+  & a {
+    @apply font-medium text-violet-700 underline decoration-violet-300 underline-offset-2 hover:decoration-violet-600;
+  }
+  & strong {
+    @apply font-semibold text-zinc-900;
+  }
+  & img {
+    @apply my-8 rounded-xl border border-zinc-200;
+  }
+  & blockquote {
+    @apply border-l-4 border-violet-300 pl-4 text-zinc-600 italic;
+  }
+  & ul,
+  & ol {
+    @apply pl-6;
+  }
+  & ul > li {
+    list-style-type: disc;
+  }
+  & ol > li {
+    list-style-type: decimal;
+  }
+  & ol > li[data-list='bullet'] {
+    list-style-type: disc;
+  }
+  & li + li {
+    @apply mt-2;
+  }
+  & li::marker {
+    color: var(--color-zinc-400);
+  }
+  & .ql-ui {
+    display: none;
+  }
+  & :not(pre) > code {
+    @apply rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-[0.875em] text-zinc-800;
+  }
+  & pre,
+  & .ql-code-block-container {
+    @apply overflow-x-auto rounded-xl bg-zinc-900 p-4 font-mono text-sm leading-6 text-zinc-100;
+    white-space: pre;
+  }
+  & .ql-align-center {
+    text-align: center;
+  }
+  & .ql-align-right {
+    text-align: right;
+  }
+  & .ql-align-justify {
+    text-align: justify;
+  }
+  & .ql-size-small {
+    font-size: 0.875em;
+  }
+  & .ql-size-large {
+    font-size: 1.25em;
+  }
+  & .ql-size-huge {
+    font-size: 1.75em;
+  }
+  & .ql-font-serif {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  & .ql-font-monospace {
+    @apply font-mono;
+  }
+  & .ql-indent-1 {
+    padding-left: 2em;
+  }
+  & .ql-indent-2 {
+    padding-left: 4em;
+  }
+  & .ql-indent-3 {
+    padding-left: 6em;
+  }
+  & .ql-indent-4 {
+    padding-left: 8em;
+  }
 }
 
-.ql-editor code {
-  background-color: #f4f4f4;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.95em;
-  border: 1px solid #ddd;
+/* Editor chrome on /create, matched to the form fields. */
+.editor .ql-toolbar.ql-snow {
+  @apply rounded-t-lg border-zinc-200 bg-zinc-50;
+}
+.editor .ql-container.ql-snow {
+  @apply min-h-72 rounded-b-lg border-zinc-200 bg-white text-base;
+  font-family: inherit;
 }
 
-em {
-  font-weight: bold;
+/* Elasticsearch wraps matched terms in <em>. */
+.search-highlight em {
+  @apply font-semibold text-violet-700 not-italic;
+}
+
+@keyframes wave {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10%,
+  30% {
+    transform: rotate(14deg);
+  }
+  20% {
+    transform: rotate(-8deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+@utility section-heading {
+  @apply text-sm font-semibold tracking-wider text-zinc-500 uppercase;
 }

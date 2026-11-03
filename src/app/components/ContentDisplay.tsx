@@ -1,27 +1,13 @@
-import { sanitizeAndTruncateHtml } from '@/lib/SanitizeHtml';
-
 type Props = {
+  /** Decoded post HTML (see parseContent). */
   html: string;
-  removeImage: boolean;
 };
 
-const ContentDisplay = ({ html, removeImage }: Props) => {
-  return (
-    <div className="w-full">
-      {removeImage ? (
-        <div
-          dangerouslySetInnerHTML={{
-            __html: sanitizeAndTruncateHtml(html, 200),
-          }}
-        />
-      ) : (
-        <div
-          className="ql-editor"
-          dangerouslySetInnerHTML={{ __html: JSON.parse(html) }}
-        />
-      )}
-    </div>
-  );
-};
+// The HTML is rendered as authored in the editor; it is not sanitised, so only
+// trusted authors should be able to create posts. Styled by .post-content in
+// globals.css.
+const ContentDisplay = ({ html }: Props) => (
+  <div className="post-content" dangerouslySetInnerHTML={{ __html: html }} />
+);
 
 export default ContentDisplay;

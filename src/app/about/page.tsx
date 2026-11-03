@@ -1,17 +1,22 @@
-import Hero from '../components/About/Hero';
+import type { Metadata } from 'next';
 import About from '../components/About/About';
+import Experience from '../components/About/Experience';
+import Hero from '../components/About/Hero';
 import Project from '../components/About/Project';
-import Exprience from '../components/About/Exprience';
+import Container from '../components/Container';
 
-const HeroSection = () => {
+export const metadata: Metadata = {
+  title: 'About Me',
+  description: 'Experience, projects and education of Bipan Chhetri.',
+};
+
+export default function AboutPage() {
   return (
-    <div>
+    <Container className="space-y-20">
       <Hero />
       <About />
       <Project />
-      <Exprience />
-    </div>
+      <Experience />
+    </Container>
   );
-};
-
-export default HeroSection;
+}

@@ -1,67 +1,78 @@
-# Blog Post Application with Next.js SSR
+# Bipan·Blog
 
-This project is a simple blog post application built using **Next.js** with **Server-Side Rendering (SSR)**. The goal of this application is to showcase the power of SSR in Next.js while providing a solid, real-world example of how to create a performant, SEO-friendly application.
+A personal blog and portfolio built with the **Next.js App Router**, React Server Components and streaming SSR. It is deployed on **Vercel**.
 
-The blog application is deployed on **Vercel** for seamless hosting and easy scalability. The project leverages **React Suspense** and other modern features in Next.js to enhance the user experience and optimize performance.
+## Stack
 
-## Features
+- **Next.js 16 / React 19**: Server Components, Suspense streaming and Server Actions
+- **PostgreSQL (Neon)** accessed through **Prisma 7** and the `pg` driver adapter
+- **Elasticsearch** for post search and title autocomplete
+- **AWS S3** for images uploaded from the editor (presigned URLs)
+- **Tailwind CSS 4**, **Quill** editor (`react-quill-new`), **EmailJS** contact form
+- **Vitest** + Testing Library, **ESLint 9** (flat config), **Prettier**
 
-- **Server-Side Rendering (SSR)** for improved SEO and fast initial page load
-- **React Suspense** for handling asynchronous data fetching
-- Built with modern **React** and **Next.js** features
-- Deployed on **Vercel** for performance and scalability
-- Clean, easy-to-understand codebase
+## How pages render
 
-## Getting Started
+| Route          | Strategy                                                                 |
+| -------------- | ------------------------------------------------------------------------ |
+| `/`            | Server-rendered per request. Recent posts stream in behind Suspense.     |
+| `/posts`       | Server-rendered per request (category, page and search query params).    |
+| `/posts/[id]`  | ISR: rendered on first request, cached, and revalidated at most hourly.  |
+| `/about`, `/contact` | Static.                                                           |
+| `/admin/*`, `/login` | Server-rendered per request, password protected.                  |
 
-To get started with this project, follow the steps below:
+Data access lives in `src/data/posts.ts` (server-only) and is called directly from Server Components. Mutations go through the `createPost` Server Action in `src/data/actions.ts`.
 
-## Prerequisites
+## Getting started
 
-- Node.js and npm installed on your machine
-- A Vercel account (for deployment)
-- A GitHub account (if you want to contribute)
-
-### Clone the Repository
+Requires Node.js 20.19+.
 
 ```bash
-git clone https://github.com/yourusername/blog-post-nextjs-ssr.git
-cd blog-post-nextjs-ssr
+npm install          # also runs `prisma generate`
+npm run dev:local    # http://localhost:3000
 ```
 
-### Install Dependencies
-```bash
-npm install
+`dev:local` reads `.env` (or `.env.example` if there is no `.env`). Both are git-ignored; production values live in the Vercel project settings. Then:
+
+- **`DATABASE_URL` empty:** starts an embedded Postgres (data in `./.pglite`), applies migrations and seeds sample posts. No database account needed.
+- **`DATABASE_URL` set:** connects to that database and only *checks* migrations. It never applies them, so a production database is never changed. Pass `--local-db` to use the embedded database anyway.
+
+Elasticsearch, S3 and EmailJS are optional. Without Elasticsearch, search falls back to a database title match.
+
+To run against your own database without the helper, use `npm run db:migrate` and then `npm run dev`.
+
+## Writing posts
+
+Sign in at `/login` with `ADMIN_PASSWORD`. An **Admin** link then appears in the navbar.
+
+- `/admin` lists every post, drafts included, with links to edit and delete.
+- `/admin/new` opens the editor. **Save draft** keeps the post private and **Publish** makes it live.
+- Saving a post updates Elasticsearch automatically. `npm run sync-data` is only needed to rebuild the index.
+
+Production needs `ADMIN_PASSWORD` and `AUTH_SECRET` (32+ random characters, e.g. `openssl rand -hex 32`) in the Vercel project settings. Changing either one signs out every session.
+
+## Scripts
+
+| Script              | Purpose                                         |
+| ------------------- | ----------------------------------------------- |
+| `npm run dev:local` | Run locally (embedded DB if none configured)    |
+| `npm run dev`       | Start the dev server                            |
+| `npm run build`     | Production build                                |
+| `npm run lint`      | ESLint                                          |
+| `npm run typecheck` | TypeScript                                      |
+| `npm test`          | Unit tests (Vitest)                             |
+| `npm run db:migrate`| Apply Prisma migrations                         |
+| `npm run db:seed`   | Add sample posts to an empty database           |
+| `npm run sync-data` | Re-index all post titles into Elasticsearch     |
+
+## Project structure
+
 ```
-
-### Run the Development Server
-```bash
-npm run dev
+src/
+  app/          routes, layouts, API route handlers and components
+  data/         server-only queries and Server Actions
+  lib/          Prisma/Elasticsearch clients and shared helpers
+  prisma/       schema and migrations
+  generated/    Prisma client (generated, not committed)
+scripts/        maintenance scripts (Elasticsearch sync)
 ```
-
-Visit http://localhost:3000 in your browser to view the application.
-
-## Deploy on Vercel
-This project is already deployed on Vercel, but you can deploy it to your own Vercel account by following these steps:
-
-Push the code to your GitHub repository.
-Log into Vercel and click on "New Project."
-Import your repository, and Vercel will automatically deploy it.
-
-## Project Structure
-- pages/ - Contains the routes and SSR pages.
-- components/ - Contains reusable UI components.
-- styles/ - Contains global styles and theming.
-- lib/ - Contains utility functions and services.
-
-
-## Contributing
-I believe in the power of collaboration and open-source development. If you're interested in improving this project, feel free to contribute by submitting bug reports, bug fixes, feature requests, or even improving the documentation.
-
-### How You Can Contribute
-- **Code Improvements:** If you notice areas where the code can be optimized, feel free to submit a pull request.
-- **Bug Fixes:** Help identify and fix any issues or performance bottlenecks.
-- **Feature Additions:** Have an idea for a feature? Open an issue or submit a pull request with your implementation.
-- **Documentation:** Help improve the documentation to make it clearer and more accessible.
-  
-Your contributions will help create a better and more efficient SSR application using Next.js, and you’ll have the chance to learn and share with the developer community.
