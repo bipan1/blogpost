@@ -17,8 +17,16 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Bipan·Blog',
-  description: 'Tecnical articles and my profile',
+  // Used to resolve relative Open Graph image URLs. On Vercel, Next falls back
+  // to the production deployment URL when this is unset.
+  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
+    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
+    : undefined,
+  title: {
+    default: 'Bipan·Blog',
+    template: '%s | Bipan·Blog',
+  },
+  description: 'Technical articles and my profile',
   icons: {
     icon: '/images/profile.png',
   },
@@ -32,11 +40,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-zinc-50 font-sans text-zinc-900 antialiased`}
       >
         <div className="min-h-screen flex flex-col">
           <Navbar />
-          <div className="flex-grow">{children}</div>
+          <main className="grow">{children}</main>
           <Footer />
         </div>
       </body>

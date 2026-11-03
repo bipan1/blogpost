@@ -1,39 +1,43 @@
-const Footer = () => {
-  return (
-    <footer className="bg-purple-900 text-white py-4 mt-10">
-      <div className="container mx-auto text-center">
-        <p className="text-sm">
-          &copy; 2024 Bipan Chhetri. All rights reserved.
-        </p>
-        <div className="mt-4 flex justify-center space-x-4">
-          <a
-            href="https://github.com/bipan1"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-purple-300"
-          >
-            GitHub
-          </a>
-          <a
-            href="https://www.facebook.com/bipan.chhetri.90"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-purple-300"
-          >
-            Facebook
-          </a>
-          <a
-            href="https://www.linkedin.com/in/bipan-chhetri-08bbb3201/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-purple-300"
-          >
-            LinkedIn
-          </a>
-        </div>
-      </div>
-    </footer>
-  );
-};
+import { FaFacebook, FaGithub, FaLinkedin } from 'react-icons/fa';
+import Container from './Container';
+
+export const SOCIAL_LINKS = [
+  { href: 'https://github.com/bipan1', label: 'GitHub', icon: FaGithub },
+  {
+    href: 'https://www.linkedin.com/in/bipan-chhetri-08bbb3201/',
+    label: 'LinkedIn',
+    icon: FaLinkedin,
+  },
+  {
+    href: 'https://www.facebook.com/bipan.chhetri.90',
+    label: 'Facebook',
+    icon: FaFacebook,
+  },
+];
+
+const Footer = () => (
+  <footer className="mt-24 border-t border-zinc-200">
+    <Container className="flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
+      <p className="text-sm text-zinc-500">
+        &copy; {new Date().getFullYear()} Bipan Chhetri. All rights reserved.
+      </p>
+      <ul className="flex items-center gap-1">
+        {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
+          <li key={href}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              className="block rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+            >
+              <Icon size={18} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </footer>
+);
 
 export default Footer;

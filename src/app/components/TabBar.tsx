@@ -1,39 +1,32 @@
-import React from 'react';
 import Link from 'next/link';
-import { Category } from '@/lib/Constants';
+import { CATEGORIES, Category } from '@/lib/Constants';
 
-const categories = [
-  'WebDev',
-  'Tech',
-  'Gadgets',
-  'Finance',
-  'Politics',
-  'Random',
-];
-
-interface TabBarProps {
-  category?: Category;
-}
-
-const TabBar: React.FC<TabBarProps> = ({ category = Category.WebDev }) => {
-  return (
-    <div className="flex space-x-4 border-b mb-5">
-      {categories.map((cat) => (
-        <Link
-          href={`/posts/?category=${cat}`}
-          key={cat}
-          prefetch={true}
-          className={`pb-2 border-b-2 px-3 ${
-            category === cat
-              ? 'border-blue-500 text-blue-500'
-              : 'border-transparent text-gray-500'
-          }`}
-        >
-          {cat}
-        </Link>
-      ))}
-    </div>
-  );
-};
+const TabBar = ({ category }: { category?: Category }) => (
+  <nav
+    aria-label="Categories"
+    className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0"
+  >
+    <ul className="flex w-max gap-1 rounded-xl bg-zinc-100 p-1">
+      {CATEGORIES.map((cat) => {
+        const active = category === cat;
+        return (
+          <li key={cat}>
+            <Link
+              href={{ pathname: '/posts', query: { category: cat } }}
+              aria-current={active ? 'page' : undefined}
+              className={`block rounded-lg px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition ${
+                active
+                  ? 'bg-white text-zinc-900 shadow-xs'
+                  : 'text-zinc-600 hover:text-zinc-900'
+              }`}
+            >
+              {cat}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+);
 
 export default TabBar;

@@ -1,6 +1,5 @@
-import React from 'react';
-import { FaGithub } from 'react-icons/fa';
 import Image from 'next/image';
+import { FaGithub } from 'react-icons/fa';
 
 const projects = [
   {
@@ -32,52 +31,59 @@ const projects = [
   },
 ];
 
-const Project = () => {
-  return (
-    <div className="bg-purple-950 pb-10">
-      <div className="mt-20  p-10 mx-auto container">
-        <h2 className="text-4xl text-white text-center mb-14">My Projects</h2>
-        <div className="flex flex-wrap">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="bg-purple-800 p-4 w-full sm:w-1/2 lg:w-1/4 rounded-2xl mr-10 mb-10"
-            >
-              <div className="relative w-full h-[230px]">
-                <Image
-                  src={project.imageUrl}
-                  alt={project.title}
-                  className="w-full h-full object-cover rounded-2xl"
-                  width={500}
-                  height={300}
-                />
-                <div className="absolute inset-0 flex justify-end m-3 card-img_hover">
-                  <div className="mt-3 black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer">
-                    <div className="rounded-3xl bg-white border-4 border-black">
-                      <a href={project.githubUrl}>
-                        <FaGithub className="text-4xl" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-8 mb-4">
-                <h3 className="text-white font-bold text-[24px]">
-                  {project.title}
-                </h3>
-                <p className="text-white mt-2 text-secondary text-[14px]">
-                  {project.description}
-                </p>
-              </div>
-              <span className="text-red-500">#{project.keywords[0]} </span>
-              <span className="text-green-500">#{project.keywords[1]} </span>
-              <span className="text-blue-500">#{project.keywords[2]} </span>
+const Project = () => (
+  <section aria-labelledby="projects-heading">
+    <h2 id="projects-heading" className="section-heading">
+      Projects
+    </h2>
+    <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {projects.map((project) => (
+        <li key={project.id}>
+          <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-zinc-900/5">
+            <div className="aspect-[16/9] overflow-hidden border-b border-zinc-100 bg-zinc-50">
+              <Image
+                src={project.imageUrl}
+                alt=""
+                width={640}
+                height={360}
+                sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
+                className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.03]"
+              />
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+            <div className="flex flex-1 flex-col p-5">
+              <h3 className="font-semibold text-zinc-900">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="after:absolute after:inset-0"
+                >
+                  {project.title}
+                </a>
+              </h3>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-600">
+                {project.description}
+              </p>
+              <div className="mt-4 flex items-center justify-between gap-3">
+                <ul className="flex flex-wrap gap-1.5">
+                  {project.keywords.map((keyword) => (
+                    <li key={keyword} className="chip">
+                      {keyword}
+                    </li>
+                  ))}
+                </ul>
+                <FaGithub
+                  className="shrink-0 text-zinc-400 transition-colors group-hover:text-zinc-900"
+                  size={18}
+                  aria-label="View on GitHub"
+                />
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </section>
+);
 
 export default Project;

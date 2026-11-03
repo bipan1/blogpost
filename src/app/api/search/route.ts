@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Client as ESClient, estypes } from '@elastic/elasticsearch';
-
-const esClient = new ESClient({
-  node: process.env.ELASTICSEARCH_URL,
-  ssl: {
-    cert: process.env.ELASTICSEARCH_CLIENT_CERT,
-    key: process.env.ELASTICSEARCH_CLIENT_KEY,
-    ca: process.env.ELASTICSEARCH_CA_CERT,
-    rejectUnauthorized: false,
-  },
-});
+import { searchPostIds } from '@/lib/elasticsearch';
 
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url);
-  const query = url.searchParams.get('q');
+  const query = req.nextUrl.searchParams.get('q')?.trim();
 
   if (!query) {
     return NextResponse.json(
@@ -23,21 +12,8 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const result = await esClient.search({
-      index: 'blogposts',
-      body: {
-        query: {
-          match: {
-            title: query,
-          },
-        },
-      },
-    });
-
-    const results = result.body.hits.hits.map(
-      (hit: estypes.SearchHit) => hit._id,
-    );
-    return NextResponse.json(results);
+    const ids = await searchPostIds(query);
+    return NextResponse.json(ids.map(String));
   } catch (error) {
     console.error('Error during Elasticsearch search:', error);
     return NextResponse.json(

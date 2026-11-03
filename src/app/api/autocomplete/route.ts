@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Client as ESClient, estypes } from '@elastic/elasticsearch';
-
-const esClient = new ESClient({
-  node: process.env.ELASTICSEARCH_URL,
-  ssl: {
-    cert: process.env.ELASTICSEARCH_CLIENT_CERT,
-    key: process.env.ELASTICSEARCH_CLIENT_KEY,
-    ca: process.env.ELASTICSEARCH_CA_CERT,
-    rejectUnauthorized: false,
-  },
-});
+import { autocompletePosts } from '@/data/posts';
 
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url);
-  const query = url.searchParams.get('q');
+  const query = req.nextUrl.searchParams.get('q')?.trim();
 
   if (!query) {
     return NextResponse.json(
@@ -23,35 +12,9 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const response = await esClient.search({
-      index: 'blogposts',
-      body: {
-        query: {
-          multi_match: {
-            query: query,
-            fields: ['title_as_you_type'],
-            type: 'bool_prefix',
-          },
-        },
-        highlight: {
-          fields: {
-            title_as_you_type: {
-              fragment_size: 30,
-            },
-          },
-        },
-      },
-    });
-
-    const suggestions = response.body.hits.hits
-      .flatMap((hit: estypes.SearchHit) => {
-        return { text: hit.highlight?.title_as_you_type || [], id: hit._id };
-      })
-      .slice(0, 5);
-
-    return NextResponse.json(suggestions);
+    return NextResponse.json(await autocompletePosts(query));
   } catch (error) {
-    console.error('Error during Elasticsearch search:', error);
+    console.error('Error during autocomplete:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

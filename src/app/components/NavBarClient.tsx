@@ -1,108 +1,69 @@
 'use client';
-import React, { useState } from 'react';
+
+import { useEffect, useState } from 'react';
+import { HiOutlineMenuAlt3, HiX } from 'react-icons/hi';
 import Link from 'next/link';
+import AdminOnly from './AdminOnly';
+import NavLinks from './NavLinks';
+import SearchBar from './SearchBar';
 
+/** Mobile menu: a panel under the header with search and links. */
 const NavBarClient = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  return (
-    <>
-      <div className="sm:hidden">
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-purple-600"
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
+  const [isOpen, setIsOpen] = useState(false);
+  const close = () => setIsOpen(false);
 
-      {isMenuOpen && (
-        <div
-          className="fixed inset-0 z-[100000] flex items-center justify-center bg-gray-500 bg-opacity-75"
-          aria-labelledby="slide-over-title"
-          role="dialog"
-          aria-modal="true"
-        >
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => e.key === 'Escape' && close();
+    document.addEventListener('keydown', onKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  return (
+    <div className="md:hidden">
+      <button
+        type="button"
+        onClick={() => setIsOpen((open) => !open)}
+        className="-mr-2 rounded-lg p-2 text-zinc-700 hover:bg-zinc-100"
+        aria-label={isOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={isOpen}
+        aria-controls="mobile-menu"
+      >
+        {isOpen ? <HiX size={22} /> : <HiOutlineMenuAlt3 size={22} />}
+      </button>
+
+      {isOpen && (
+        <>
           <div
-            className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+            className="fixed inset-x-0 top-16 bottom-0 bg-zinc-900/20 backdrop-blur-xs"
+            onClick={close}
             aria-hidden="true"
-          ></div>
-          <div className="relative flex h-full w-full max-w-md flex-col bg-gray-900 shadow-xl">
-            <div className="flex justify-center py-4">
-              <h2
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-2xl font-bold text-white"
-                id="slide-over-title"
-              >
-                Bipan Chhetri
-              </h2>
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                type="button"
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-500"
-              >
-                <span className="sr-only">Close panel</span>
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
+          />
+          <div
+            id="mobile-menu"
+            className="fixed inset-x-0 top-16 border-b border-zinc-200 bg-white px-5 pt-4 pb-6 shadow-lg"
+          >
+            <SearchBar onNavigate={close} />
+            <nav aria-label="Mobile" className="mt-4">
+              <NavLinks vertical onNavigate={close} />
+              <AdminOnly>
+                <Link
+                  href="/admin"
+                  onClick={close}
+                  className="mt-1 block rounded-lg px-3 py-2 text-base font-medium text-violet-700 hover:bg-zinc-50"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="flex flex-1 flex-col items-center justify-center text-white">
-              <Link
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                href="/posts"
-                className="mb-4 border-b border-green-800 py-2"
-              >
-                <span className="font-bold hover:text-purple-500 cursor-pointer">
-                  Posts
-                </span>
-              </Link>
-              <Link
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                href="/about"
-                className="mb-4 border-b border-green-800 py-2"
-              >
-                <span className="font-bold hover:text-purple-500 cursor-pointer">
-                  About Me
-                </span>
-              </Link>
-              <Link
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                href="/contact"
-                className="border-b border-green-800 py-2"
-              >
-                <span className="font-bold hover:text-purple-500 cursor-pointer">
-                  Contact Us
-                </span>
-              </Link>
-            </div>
+                  Admin
+                </Link>
+              </AdminOnly>
+            </nav>
           </div>
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 

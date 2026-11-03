@@ -51,7 +51,7 @@ const syncData = async () => {
 
     while (hasMoreData) {
       const res = await pgClient.query(
-        'SELECT * FROM "Post" LIMIT $1 OFFSET $2',
+        'SELECT * FROM "Post" WHERE published ORDER BY id LIMIT $1 OFFSET $2',
         [batchSize, offset],
       );
       const posts: BlogPost[] = res.rows;
