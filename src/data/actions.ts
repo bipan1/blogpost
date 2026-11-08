@@ -18,7 +18,7 @@ import {
 } from '@/lib/elasticsearch';
 import prisma from '@/lib/prisma';
 import { DEFAULT_CATEGORY } from '@/lib/Constants';
-import { parseCategory, toPlainText } from '@/lib/Helpers';
+import { normalizeSpaces, parseCategory, toPlainText } from '@/lib/Helpers';
 import type { PostInput } from '@/types/Post';
 
 export type ActionResult = { error: string } | undefined;
@@ -71,7 +71,7 @@ const parseInput = (input: PostInput) => {
     data: {
       title,
       // Stored JSON-encoded to stay compatible with existing rows.
-      content: JSON.stringify(content),
+      content: JSON.stringify(normalizeSpaces(content)),
       keywords: (input.keywords ?? '').split(/\s+/).filter(Boolean),
       category: parseCategory(input.category) ?? DEFAULT_CATEGORY,
       published: input.published === true,

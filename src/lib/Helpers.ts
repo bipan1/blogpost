@@ -10,16 +10,26 @@ export const formatDate = (date: Date | string) =>
   }).format(new Date(date));
 
 /**
+ * Quill 2's HTML export turns every space into &nbsp;, which makes each
+ * paragraph one unbreakable "word" that the browser then splits mid-word.
+ * Converts non-breaking spaces back to ordinary ones.
+ */
+export const normalizeSpaces = (html: string) =>
+  html.replace(/&nbsp;|&#160;|&#xa0;|\u00a0/gi, ' ');
+
+/**
  * Post content is stored as a JSON-encoded HTML string (see createPost).
  * Falls back to the raw value for any rows saved without encoding.
  */
 export const parseContent = (stored: string): string => {
+  let html = stored;
   try {
     const parsed: unknown = JSON.parse(stored);
-    return typeof parsed === 'string' ? parsed : stored;
+    if (typeof parsed === 'string') html = parsed;
   } catch {
-    return stored;
+    // Not JSON-encoded: use as-is.
   }
+  return normalizeSpaces(html);
 };
 
 const ENTITIES: Record<string, string> = {

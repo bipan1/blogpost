@@ -133,6 +133,9 @@ const PostForm = ({ post }: PostFormProps) => {
             <ReactQuill
               ref={quillRef}
               theme="snow"
+              // Keep ordinary spaces: the default "semantic" HTML export turns
+              // every space into &nbsp;.
+              useSemanticHTML={false}
               modules={modules}
               value={field.value}
               onChange={field.onChange}

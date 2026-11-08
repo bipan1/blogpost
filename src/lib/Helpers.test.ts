@@ -19,6 +19,14 @@ describe('parseContent', () => {
   it('falls back to the raw value when it is not JSON', () => {
     expect(parseContent('<p>raw</p>')).toBe('<p>raw</p>');
   });
+
+  it('turns the &nbsp; Quill 2 puts between every word back into spaces', () => {
+    const quill2 =
+      '<p>The&nbsp;anger&nbsp;is&nbsp;not&#160;irrational.\u00a0Yes</p>';
+    expect(parseContent(JSON.stringify(quill2))).toBe(
+      '<p>The anger is not irrational. Yes</p>',
+    );
+  });
 });
 
 describe('toPlainText / excerpt', () => {
