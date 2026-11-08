@@ -7,7 +7,7 @@ import Container from '../components/Container';
 
 export const metadata: Metadata = {
   title: 'About Me',
-  description: 'Experience, projects and education of Bipan Chhetri.',
+  description: 'Experience, education and projects of Bipan Chhetri.',
 };
 
 export default function AboutPage() {
@@ -15,8 +15,8 @@ export default function AboutPage() {
     <Container className="space-y-20">
       <Hero />
       <About />
-      <Project />
       <Experience />
+      <Project />
     </Container>
   );
 }

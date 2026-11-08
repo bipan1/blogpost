@@ -27,9 +27,6 @@ export const metadata: Metadata = {
     template: '%s | Bipan·Blog',
   },
   description: 'Technical articles and my profile',
-  icons: {
-    icon: '/images/profile.png',
-  },
 };
 
 export default function RootLayout({
